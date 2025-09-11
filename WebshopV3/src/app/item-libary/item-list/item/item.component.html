@@ -1,0 +1,11 @@
+<div class= "col-md-11 container panel panel-primary" style="margin: 30px; min-height: 95vh">
+  <div class="card" style="width: 100%; margin: 10px">
+    <img src="{{item.imgPath}}" class="card-img-top" alt="Card Image" style="width: 100%; height: auto">
+    <div class="panel-body">
+      <h2>{{item.name}}</h2>
+      <h4>€{{item.price}}</h4>
+      <p>{{item.description}}</p>
+      <a (click)="addMiniToShoppingCart(item.name, item.price)" class="btn btn-primary">add to cart</a>
+    </div>
+  </div>
+</div>

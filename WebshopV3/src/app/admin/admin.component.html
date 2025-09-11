@@ -1,0 +1,27 @@
+<h1 class="text-danger text-center">Admin Panel</h1>
+<hr>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 text-center">
+      <button type="button" class="btn btn-success btn-lg" [routerLink]="['/admin', { outlets: { miniCUD: ['new'] } }]">Add Mini</button>
+    </div>
+    <div class="col-md-4 text-center">
+      <button type="button" class="btn btn-warning btn-lg" [routerLink]="['/admin', { outlets: { miniCUD: ['update'] } }]">Update Mini</button>
+    </div>
+    <div class="col-mb-4 text-center">
+      <button type="button" class="btn btn-danger btn-lg" [routerLink]="['/admin', { outlets: { miniCUD: ['delete'] } }]">Delete Mini</button>
+    </div>
+    <br>
+    <router-outlet class="col-md-3" name="miniCUD"></router-outlet>
+  </div>
+  <hr>
+  <div class="col-md-12 text-center">
+    <button type="button" class="btn btn-info btn-lg">See Orders</button>
+    <router-outlet></router-outlet>
+    <hr>
+  </div>
+  <div class="col-md-12 text-center">
+    <button type="button" class="btn btn-info btn-lg">See Users</button>
+    <router-outlet></router-outlet>
+  </div>
+</div>

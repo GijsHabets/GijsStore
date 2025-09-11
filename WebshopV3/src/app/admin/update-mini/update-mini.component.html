@@ -1,0 +1,21 @@
+
+<div class="col-md-6 col-centered form-group text-center">
+  <form (ngSubmit)="onUpdateItem(f)" #f="ngForm">
+    <label for="name">Name</label>
+    <select (change)="onChange()" class="form-control" id="name" name="name" ngModel #miniSelect>
+      <option value="" disabled selected>--Select mini to update--</option>
+      <option *ngFor="let item of items">{{item.name}}</option>
+    </select>
+    <label for="description">Description</label>
+    <textarea [(ngModel)]="description" maxlength="600" rows="12" cols="50" type="text" id="description"  class="form-control" name="description" ngModel required></textarea>
+    <label for="imgPath">ImageUrl</label>
+    <input type="text" id="imgPath" class="form-control" [(ngModel)]="imgPath" name="imgPath" ngModel required>
+    <label for="price">Price</label>
+    <input [(ngModel)]="price" type="number" id="price" class="form-control" name="price" pattern="^[1-9]+[0-9]*$" ngModel required>
+    <label for="stock">Stock</label>
+    <input [(ngModel)]="stock" type="number" id="stock" class="form-control" name="stock" pattern="^[1-9]+[0-9]*$" ngModel required>
+    <br>
+    <button type="submit" class="btn btn-success " [disabled]="!f.valid">Update</button>
+  </form>
+</div>
+
