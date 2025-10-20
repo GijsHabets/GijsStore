@@ -26,6 +26,8 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
+      BEZKODER_APP_JWTEXPIRATIONMS: 86400000
+      BEZKODER_APP_JWTSECRET: hisIsASecureRandomSecretStringOfAtLeast32Chars!!!
       DB_HOST: db
       DB_PORT: 5432
       DB_NAME: ${DB_NAME}

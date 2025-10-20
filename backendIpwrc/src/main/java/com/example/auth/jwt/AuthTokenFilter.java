@@ -5,64 +5,53 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Component
 public class AuthTokenFilter extends OncePerRequestFilter {
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
-
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
+    private final JwtUtils jwtUtils;
+    private final UserDetailsServiceImpl userDetailsService;
+
+    public AuthTokenFilter(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService) {
+        this.jwtUtils = jwtUtils;
+        this.userDetailsService = userDetailsService;
+    }
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        String path = request.getRequestURI();
+        logger.info("AuthTokenFilter entered: {} {}", request.getMethod(), request.getRequestURI());
 
-        // Skip public endpoints completely
-        if (path.startsWith("/api/auth/")
-                || path.startsWith("/api/test/")
-                || path.equals("/error")
-                || path.startsWith("/api/minicon/")
-                || "OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            chain.doFilter(request, response);
-            return;
-        }
-
+        String jwt = parseJwt(request);
         try {
-            String authHeader = request.getHeader("Authorization");
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7).trim();
-                if (jwtUtils.validateJwtToken(token)) {
-                    String username = jwtUtils.getUserNameFromJwtToken(token);
-                    UserDetails ud = userDetailsService.loadUserByUsername(username);
-                    UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(ud, null, ud.getAuthorities());
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
+            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                String username = jwtUtils.getUserNameFromJwtToken(jwt);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                // zet auth
+                org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(auth);
+                logger.info("JWT ok → setAuthentication for {}", username);
+            } else {
+                logger.info("JWT missing/invalid");
             }
         } catch (Exception e) {
-            logger.warn("JWT processing failed: {}", e.getMessage());
+            logger.warn("JWT processing failed", e);
         }
-
         chain.doFilter(request, response);
     }
+
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {

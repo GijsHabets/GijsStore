@@ -1,96 +1,85 @@
+// com.example.auth.WebSecurityConfig
 package com.example.auth;
 
 import com.example.auth.jwt.AuthEntryPointJwt;
 import com.example.auth.jwt.AuthTokenFilter;
 import com.example.service.UserDetailsServiceImpl;
-import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
 
-// WebSecurityConfig.java
 @Configuration
 @EnableWebSecurity
-// In Spring Security 6+, prefer:
-@org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity(
-        securedEnabled = true, jsr250Enabled = true, prePostEnabled = true
-)
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
     private final AuthEntryPointJwt unauthorizedHandler;
     private final UserDetailsServiceImpl userDetailsService;
+    private final AuthTokenFilter authTokenFilter;
 
     public WebSecurityConfig(AuthEntryPointJwt unauthorizedHandler,
-                             UserDetailsServiceImpl userDetailsService) {
+                             UserDetailsServiceImpl userDetailsService,
+                             AuthTokenFilter authTokenFilter) {
         this.unauthorizedHandler = unauthorizedHandler;
         this.userDetailsService = userDetailsService;
+        this.authTokenFilter = authTokenFilter;
     }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider p = new DaoAuthenticationProvider();
-        p.setUserDetailsService(userDetailsService);
-        p.setPasswordEncoder(passwordEncoder());
-        return p;
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg) throws Exception {
-        return cfg.getAuthenticationManager();
-    }
+    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
     @Bean
-    public Filter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
-    }
-
-    // ✅ Let Spring Security answer preflight with 200 + CORS headers
-    @Bean
-    public org.springframework.security.web.SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthTokenFilter authTokenFilter) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {})                                   // <--- IMPORTANT
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // preflight
-                        .requestMatchers("/api/auth/**", "/api/test/**", "/api/minicon/**", "/error").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/test/all").permitAll()
                         .anyRequest().authenticated()
                 );
-
-        http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
-    // ✅ Define allowed origin(s), headers, methods
     @Bean
-    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
-        var cfg = new org.springframework.web.cors.CorsConfiguration();
-        // Allow your dev front-end origins. Include both localhost and 127.0.0.1 just in case.
-        cfg.setAllowedOrigins(java.util.List.of("http://localhost:4200", "http://127.0.0.1:4200"));
-        cfg.setAllowedMethods(java.util.List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
-        cfg.setAllowedHeaders(java.util.List.of("Content-Type","Authorization"));
-        // If you send cookies (withCredentials: true), set this true and DO NOT use '*'
-        cfg.setAllowCredentials(false); // set true only if you actually use cookies
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration cfg = new CorsConfiguration();
+        cfg.setAllowedOrigins(List.of("http://localhost:4200", "http://127.0.0.1:4200"));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Content-Type","Authorization"));
+        cfg.setAllowCredentials(false); // zet alleen true als je cookies gebruikt
 
-        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cfg);
-        return source;
+        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
+        src.registerCorsConfiguration("/**", cfg);
+        return src;
     }
 }
