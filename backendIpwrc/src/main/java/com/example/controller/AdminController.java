@@ -20,6 +20,12 @@ public class AdminController {
         this.userRepository = userRepository;
     }
 
+    @GetMapping("/users")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Iterable<User>> getAllUsers() {
+        return ResponseEntity.ok(userRepository.findAll());
+    }
+
     @PutMapping("/updateRole/{roleName}/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> updateUserRole(@PathVariable(value = "userId") Long userId,@PathVariable(value = "roleName") String roleName) {
