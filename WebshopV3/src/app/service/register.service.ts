@@ -23,8 +23,7 @@ export class RegisterService{
     var role = this.selectRole;
 
     const headers = { 'Content-Type': 'application/json' };
-    let url =  `http://localhost:8080/api/auth/signup`
-    this.http.post<{message: string}>(url,
+    this.http.post<{message: string}>(`${environment.apiBase}/auth/signup`,
       {
         "username": username,
         "email": email,
