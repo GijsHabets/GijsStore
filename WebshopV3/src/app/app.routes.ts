@@ -8,6 +8,7 @@ import {UpdateMiniComponent} from "./admin/update-mini/update-mini.component";
 import {AddMiniComponent} from "./admin/add-mini/add-mini.component";
 import {AdminComponent} from "./admin/admin.component";
 import {KlantComponent} from "./klant/klant.component";
+import {UpdateRoleComponent} from "./admin/remove-role/update-role.component";
 
 export const routes: Routes = [
   {path: '', component: HomePageComponent},
@@ -15,7 +16,8 @@ export const routes: Routes = [
   {path: 'admin', component: AdminComponent, children: [
       {path: 'new', component: AddMiniComponent, outlet: 'miniCUD'},
       {path: 'update', component: UpdateMiniComponent, outlet: "miniCUD"},
-      {path: 'delete', component: RemoveMiniComponent, outlet: "miniCUD"}
+      {path: 'delete', component: RemoveMiniComponent, outlet: "miniCUD"},
+      {path: 'users', component: UpdateRoleComponent, outlet: "userCRUD"}
     ]},
   {path: 'item-catalog', component: ItemLibaryComponent},
   {path: 'klant', component: KlantComponent},

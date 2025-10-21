@@ -20,6 +20,10 @@ public class Role {
         this.name = name;
     }
 
+    public static Role valueOf(String roleName) {
+        return new Role(ERole.valueOf(roleName));
+    }
+
     public Integer getId() {
         return id;
     }

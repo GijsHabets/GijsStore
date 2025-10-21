@@ -49,9 +49,6 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    //@Autowired
-    //MailSenderService mailSenderService;
-
 
 
 
@@ -89,12 +86,8 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
-//        int max = 999999999;
-//        int min = 111111111;
-//        int randomInt = (int)Math.floor(Math.random() * (max - min + 1) +min);
         String password =  signUpRequest.getPassword();
 
-        // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 encoder.encode(password));
@@ -131,11 +124,6 @@ public class AuthController {
 
         user.setRoles(roles);
         userRepository.save(user);
-
-//        String email = signUpRequest.getEmail();
-//        String passwordmsg = "Password for:"+signUpRequest.getUsername();
-//        mailSenderService.sendMail(email,passwordmsg, password);
-
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

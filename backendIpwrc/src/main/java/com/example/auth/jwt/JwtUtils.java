@@ -26,11 +26,9 @@ public class JwtUtils {
     private int jwtExpirationMs;
 
     private Key key() {
-        // Raw string sleutel (veilig: gebruik een minimaal 32+ char random string)
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    // Genereren
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         return Jwts.builder()
@@ -41,7 +39,6 @@ public class JwtUtils {
                 .compact();
     }
 
-    // Lezen/valideren
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
@@ -49,7 +46,6 @@ public class JwtUtils {
 
     public boolean validateJwtToken(String authToken) {
         try {
-            // Log minimale debug info (géén volledige secret)
             logger.info("JWT debug: alg=HS256, secretLen={}, first5='{}'",
                     jwtSecret != null ? jwtSecret.length() : -1,
                     jwtSecret != null && jwtSecret.length() >= 5 ? jwtSecret.substring(0, 5) : "n/a");

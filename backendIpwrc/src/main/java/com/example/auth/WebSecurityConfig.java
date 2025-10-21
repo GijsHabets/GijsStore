@@ -6,7 +6,6 @@ import com.example.auth.jwt.AuthTokenFilter;
 import com.example.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -76,7 +75,7 @@ public class WebSecurityConfig {
         cfg.setAllowedOrigins(List.of("http://localhost:4200", "http://127.0.0.1:4200"));
         cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("Content-Type","Authorization"));
-        cfg.setAllowCredentials(false); // zet alleen true als je cookies gebruikt
+        cfg.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
         src.registerCorsConfiguration("/**", cfg);
