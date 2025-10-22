@@ -12,7 +12,7 @@ export class RoleService{
 
   updateRoles(index: number): void {
     const headers = { 'Content-Type': 'application/json','Authorization': 'Bearer '+sessionStorage.getItem('JWT') };
-    const route = `${environment.apiBase}/admincon/updateRole/ROLE_ADMIN/`+index.toString()
+    const route = `${environment.apiBase}/admincon/updateRole/`+index.toString()
     this.http.put(route, {headers}).subscribe(responseData =>{
       console.log(responseData);
     });

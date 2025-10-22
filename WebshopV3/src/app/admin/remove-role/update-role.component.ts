@@ -28,14 +28,14 @@ export class UpdateRoleComponent implements OnInit{
   async onUpdateRole(f: NgForm) {
     const value = f.value
     console.log("test1")
-    const user = this.users.find(user => user.username === value.username);
+    const user = this.users.find(user => user.username === value.addUser);
     this.roleService.updateRoles(user.id)
     f.reset()
   }
   async onRemoveRole(f: NgForm) {
     console.log("test")
     const value = f.value
-    const user = this.users.find(user => user.username === value.username);
+    const user = this.users.find(user => user.username === value.removeUser);
     this.roleService.removeRoles(user.id)
     f.reset()
   }

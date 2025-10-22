@@ -26,10 +26,10 @@ public class AdminController {
         return ResponseEntity.ok(userRepository.findAll());
     }
 
-    @PutMapping("/updateRole/{roleName}/{userId}")
+    @PutMapping("/updateRole/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> updateUserRole(@PathVariable(value = "userId") Long userId,@PathVariable(value = "roleName") String roleName) {
-        return adminService.updateUserRole(userId, Role.valueOf(roleName));
+    public ResponseEntity<User> updateUserRole(@PathVariable(value = "userId") Long userId) {
+        return adminService.updateUserRole(userId);
     }
 
     @DeleteMapping("/removeRole/{userId}")
