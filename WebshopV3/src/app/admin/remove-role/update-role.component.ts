@@ -27,11 +27,13 @@ export class UpdateRoleComponent implements OnInit{
 
   async onUpdateRole(f: NgForm) {
     const value = f.value
+    console.log("test1")
     const user = this.users.find(user => user.username === value.username);
     this.roleService.updateRoles(user.id)
     f.reset()
   }
   async onRemoveRole(f: NgForm) {
+    console.log("test")
     const value = f.value
     const user = this.users.find(user => user.username === value.username);
     this.roleService.removeRoles(user.id)
@@ -40,9 +42,9 @@ export class UpdateRoleComponent implements OnInit{
 
   ngOnInit() {
     this.users = this.roleService.getUsers()
-    this.usersWithoutAdmin = this.users.filter(user => !user.roles.includes('ROLE_ADMIN'));
-    this.usersWithAdmin = this.users.filter(user => user.roles.includes('ROLE_ADMIN'));
-
+    const isAdmin = (u: User) => u.roles?.some(r => r.name === 'ROLE_ADMIN');
+    this.usersWithAdmin = this.users.filter(isAdmin);
+    this.usersWithoutAdmin = this.users.filter(u => !isAdmin(u));
   }
   onChange(){
     let value = this.userSelected.nativeElement.value
