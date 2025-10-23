@@ -20,6 +20,8 @@ export class UpdateRoleComponent implements OnInit{
   usersWithoutAdmin: User[];
   usersWithAdmin: User[];
   @ViewChild('userSelect') userSelected: ElementRef
+  @ViewChild('userSelect2') userSelected2: ElementRef
+  selectedToRemove: User | null;
 
   constructor( private roleService: RoleService) {
   }
@@ -32,12 +34,15 @@ export class UpdateRoleComponent implements OnInit{
     this.roleService.updateRoles(user.id)
     f.reset()
   }
-  async onRemoveRole(f: NgForm) {
+  async onRemoveRole(f2: NgForm) {
     console.log("test")
-    const value = f.value
+    const value = f2.value
     const user = this.users.find(user => user.username === value.removeUser);
+    if (!user) {
+      return;
+    }
     this.roleService.removeRoles(user.id)
-    f.reset()
+    f2.reset()
   }
 
   ngOnInit() {
@@ -48,6 +53,7 @@ export class UpdateRoleComponent implements OnInit{
   }
   onChange(){
     let value = this.userSelected.nativeElement.value
+    let value2 = this.userSelected2.nativeElement.value
   }
 
 

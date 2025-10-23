@@ -32,7 +32,7 @@ public class AdminController {
         return adminService.updateUserRole(userId);
     }
 
-    @DeleteMapping("/removeRole/{userId}")
+    @PutMapping("/removeRole/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> removeUserRole(@PathVariable(value = "userId") Long userId) {
         return adminService.removeUserRole(userId);

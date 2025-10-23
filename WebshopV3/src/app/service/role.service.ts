@@ -13,7 +13,7 @@ export class RoleService{
   updateRoles(index: number): void {
     const headers = { 'Content-Type': 'application/json','Authorization': 'Bearer '+sessionStorage.getItem('JWT') };
     const route = `${environment.apiBase}/admincon/updateRole/`+index.toString()
-    this.http.put(route, {headers}).subscribe(responseData =>{
+    this.http.put(route, {}, {headers}).subscribe(responseData =>{
       console.log(responseData);
     });
 
@@ -23,7 +23,7 @@ export class RoleService{
   removeRoles(index: number): void {
     const headers = { 'Content-Type': 'application/json','Authorization': 'Bearer '+sessionStorage.getItem('JWT') };
     const route = `${environment.apiBase}/admincon/removeRole/`+index.toString()
-    this.http.delete(route,{headers}).subscribe(responseData =>{
+    this.http.put(route,{},{headers}).subscribe(responseData =>{
       console.log(responseData);
     })
   }

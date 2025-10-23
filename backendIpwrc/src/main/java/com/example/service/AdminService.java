@@ -35,7 +35,6 @@ public class AdminService {
     public ResponseEntity<User> removeUserRole(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
         user.getRoles().removeIf(r -> r.getName() == ERole.ROLE_ADMIN);
         return ResponseEntity.ok(user);
     }

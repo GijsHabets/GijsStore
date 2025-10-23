@@ -8,9 +8,9 @@
     </select>
     <button type="submit" class="btn btn-success " [disabled]="!f.valid">Make admin</button>
   </form>
-  <form (ngSubmit)="onRemoveRole(f)" #f="ngForm">
+  <form (ngSubmit)="onRemoveRole(f2)" #f2="ngForm">
     <label for="removeUser">User Name</label>
-    <select (change)="onChange()" class="form-control" id="removeUser" name="removeUser" ngModel #userSelect>
+    <select (change)="onChange()" class="form-control" id="removeUser" name="removeUser" [(ngModel)]="selectedToRemove" #userSelect2>
       <option value="" disabled selected>--Select user to update--</option>
       <option *ngFor="let user of usersWithAdmin">{{user.username}}</option>
     </select>
