@@ -5,8 +5,8 @@
     <ul class="list-group">
       <a class="list-group-item" style="cursor: pointer" *ngFor="let mini of minis">
         {{mini.name}} ({{mini.amount}}) €{{mini.price}}
+        <button class="btn-danger" (click)="removeMiniFromCart(mini)">remove</button>
       </a>
-
     </ul>
     <hr>
     <h4 *ngIf="sCService.getTotal() !== 0">total: €{{sCService.getTotal()}}</h4>

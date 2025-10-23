@@ -28,4 +28,11 @@ export class ShoppingListComponent implements OnInit{
       }
     )
   }
+
+  removeMiniFromCart(mini: Mini) {
+
+    this.sCService.removeMini(mini)
+
+
+  }
 }
