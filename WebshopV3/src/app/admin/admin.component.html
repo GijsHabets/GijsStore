@@ -15,13 +15,9 @@
     <router-outlet class="col-md-3" name="miniCUD"></router-outlet>
   </div>
   <hr>
-  <div class="col-md-12 text-center">
-    <button type="button" class="btn btn-info btn-lg">See Orders</button>
-    <router-outlet></router-outlet>
-    <hr>
-  </div>
   <div class="text-center">
     <button type="button" class="btn btn-info btn-lg" [routerLink]="['/admin', { outlets: { userCRUD: ['users'] } }]">See Users</button>
+    <br>
     <router-outlet class="col-md-3" name="userCRUD"></router-outlet>
   </div>
 </div>

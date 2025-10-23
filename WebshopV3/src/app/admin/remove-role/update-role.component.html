@@ -2,18 +2,24 @@
 <div class="col-md-6 col-centered form-group text-center">
   <form (ngSubmit)="onUpdateRole(f)" #f="ngForm">
     <label for="addUser">User Name</label>
-    <select (change)="onChange()" class="form-control" id="addUser" name="addUser" ngModel #userSelect>
-      <option value="" disabled selected>--Select user to update--</option>
-      <option *ngFor="let user of usersWithoutAdmin">{{user.username}}</option>
-    </select>
-    <button type="submit" class="btn btn-success " [disabled]="!f.valid">Make admin</button>
+    <div class="form-group">
+      <select (change)="onChange()" class="form-control" id="addUser" name="addUser" ngModel #userSelect>
+        <option value="" disabled selected>--Select user to update--</option>
+        <option *ngFor="let user of usersWithoutAdmin">{{user.username}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-success mb-2" [disabled]="!f.valid">Make admin</button>
+    </div>
   </form>
   <form (ngSubmit)="onRemoveRole(f2)" #f2="ngForm">
     <label for="removeUser">User Name</label>
-    <select (change)="onChange()" class="form-control" id="removeUser" name="removeUser" [(ngModel)]="selectedToRemove" #userSelect2>
-      <option value="" disabled selected>--Select user to update--</option>
-      <option *ngFor="let user of usersWithAdmin">{{user.username}}</option>
-    </select>
+    <div class="form-group">
+      <select (change)="onChange()" class="form-control mb-1" id="removeUser" name="removeUser" ngModel #userSelect2>
+        <option value="" disabled selected>--Select user to update--</option>
+        <option *ngFor="let user of usersWithAdmin">{{user.username}}</option>
+      </select>
+    </div>
     <button type="submit" class="btn btn-success " [disabled]="!f.valid">Remove admin</button>
   </form>
 </div>
